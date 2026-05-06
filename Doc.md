@@ -1,4 +1,4 @@
-# System Design Validation (Backend) — simple
+# System Design Validation (Backend)  
 
 This is the validation that runs when frontend calls:
 

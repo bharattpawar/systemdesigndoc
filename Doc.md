@@ -26,8 +26,9 @@ When `SystemDesignService.analyzeArchitecture(...)` runs, it does **Stage A vali
 4. **No forbidden direct connections (rule engine)**
    - example: `Client -> Database` is forbidden
    - error `400`: `Invalid architecture connections: <source> -> <target>: <reason>`
+   - - example: `A -> B` is forbidden (Multiple checks)
 5. **Client + Database cannot exist without an app/compute service**
-   - catches designs like `Client -> Cache -> Database` with no service layer
+   - catches designs like `Client -> Cache -> Database` with no service layer (Multiple checks)
    - error `400`: `No application service is present in the architecture`
 
 ---

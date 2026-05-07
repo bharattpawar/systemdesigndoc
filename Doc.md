@@ -1,4 +1,4 @@
-# System Design Validation (Backend)  
+# System Design Validation (Backend) — simple
 
 This is the validation that runs when frontend calls:
 
@@ -26,9 +26,8 @@ When `SystemDesignService.analyzeArchitecture(...)` runs, it does **Stage A vali
 4. **No forbidden direct connections (rule engine)**
    - example: `Client -> Database` is forbidden
    - error `400`: `Invalid architecture connections: <source> -> <target>: <reason>`
-   - - example: `A -> B` is forbidden (Multiple checks)
 5. **Client + Database cannot exist without an app/compute service**
-   - catches designs like `Client -> Cache -> Database` with no service layer (Multiple checks)
+   - catches designs like `Client -> Cache -> Database` with no service layer
    - error `400`: `No application service is present in the architecture`
 
 ---
@@ -46,6 +45,7 @@ When `SystemDesignService.analyzeArchitecture(...)` runs, it does **Stage A vali
 - Stage B (requirement coverage scoring from rubric JSON)
 - Deeper “arrows meaningful” semantics (beyond forbidden-edge rules)
 - Returning a full `violations[]` array to frontend (right now it returns one combined error message)
+- Persisting/using C4 diagram level or per-level problem formats on backend (frontend supports it locally; backend support pending)
 
 ---
 
@@ -55,3 +55,37 @@ Edit `src/modules/systemDesign/graphRuleChecks.ts`:
 
 - Add patterns to `SOURCE` / `TARGET` (if needed)
 - Add a new entry to `RULES` with a clear `reason`
+
+---
+
+# Frontend additions (System Design UI)
+
+These are **frontend-only changes** added to the System Design UI. Backend is **not** updated yet for these fields.
+
+## B: User picks the diagram level (C4 Abstraction)
+
+When a user selects/works on a System Design problem, the UI shows a diagram-level selector with 3 options:
+
+- **Beginner** → **System Context Diagram**
+- **Intermediate** → **Container Diagram**
+- **Advanced** → **Component Diagram**
+
+Current implementation details:
+
+- Stored in browser `localStorage` **per problem**
+- Also sent in `POST /v1/system-design/analyze` request body under `meta.diagramLevel`
+  - Values: `beginner | intermediate | advanced`
+  - Backend currently ignores this (until backend is updated)
+
+## Admin panel: 3 formats per question (local-only)
+
+In Admin → System Design Problems, the create/edit form has 3 text areas to add different formats for the same question:
+
+- Beginner (System Context)
+- Intermediate (Container)
+- Advanced (Component)
+
+Current implementation details:
+
+- Saved to browser `localStorage` (keyed by `problemId`)
+- Not included in create/update payload yet (backend support pending)

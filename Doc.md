@@ -84,8 +84,4 @@ In Admin → System Design Problems, the create/edit form has 3 text areas to ad
 - Beginner (System Context)
 - Intermediate (Container)
 - Advanced (Component)
-
-Current implementation details:
-
-- Saved to browser `localStorage` (keyed by `problemId`)
-- Not included in create/update payload yet (backend support pending)
+ 

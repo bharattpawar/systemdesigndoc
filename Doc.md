@@ -84,4 +84,42 @@ In Admin → System Design Problems, the create/edit form has 3 text areas to ad
 - Beginner (System Context)
 - Intermediate (Container)
 - Advanced (Component)
- 
+
+Current implementation details:
+
+- Saved to browser `localStorage` (keyed by `problemId`)
+- Not included in create/update payload yet (backend support pending)
+
+
+## Stage 2: 
+
+## 1. Schema Changes
+A new optional field has been added to the **SystemDesignProblem** model to support structured grading:
+
+* **Field:** `evaluationSpec`
+* **Type:** `Json?` (Optional)
+
+---
+
+## 2. Backend Validation
+The backend now includes strict validation for Stage B specifications and analysis levels:
+
+* **Evaluation Spec:** Validates the structure of `evaluationSpec` during problem creation and updates.
+* **Abstraction Level:** Validates the `abstractionLevel` parameter within analyze requests.
+
+---
+
+## 3. Deterministic Stage B Evaluator
+A new module has been implemented to handle Stage B scoring with high predictability.
+
+### Capability Extraction
+The evaluator parses the submitted design to infer capabilities based on:
+* **Nodes:** Type, labels/names, and configuration.
+* **Edges:** Relationships and edge-specific configurations.
+* **Context:** Optional text metadata provided with the design.
+
+### Requirement Evaluation
+Detected capabilities are compared against the selected level rubric using logical operators:
+* `allOf`: Requires all specified capabilities.
+* `anyOf`: Requires at least one of the specified capabilities.
+* `noneOf`: Penalizes the presence of specific capabilities. 
